@@ -24,6 +24,7 @@ function onSubmit(e) {
   e.preventDefault();
   e.currentTarget.reset();
   e.target.reset();
+  formContainer[e.target.name] = '';
   localStorage.removeItem('feedback-form-state');
 }
 
