@@ -13,7 +13,9 @@ refs.form.addEventListener('submit', onSubmit);
 const formContainer = {};
 
 function onForm(e) {
-  formContainer[e.target.name] = e.target.value;
+  const value = e.target.value;
+  formContainer[e.target.name] = value;
+  // formContainer[e.target.name] = e.target.value;
   localStorage.setItem('feedback-form-state', JSON.stringify(formContainer));
 }
 
@@ -21,6 +23,7 @@ function onSubmit(e) {
   console.log(JSON.parse(localStorage.getItem('feedback-form-state')));
   e.preventDefault();
   e.currentTarget.reset();
+  e.target.reset();
   localStorage.removeItem('feedback-form-state');
 }
 
