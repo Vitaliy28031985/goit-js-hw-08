@@ -1,37 +1,45 @@
 
-import throttle from 'lodash.throttle';
+import throttle from "lodash.throttle";
 
-const refs = {
-   form: document.querySelector('.feedback-form'),
-   email: document.querySelector('.feedback-form input'),
-   message: document.querySelector('.feedback-form textarea'),
-};
+const formEl = document.querySelector(".feedback-form");
+const emailEl = document.querySelector("input");
+const messageEl = document.querySelector("textarea");
 
-refs.form.addEventListener('input', throttle(onForm, 500));
-refs.form.addEventListener('submit', onSubmit);
+const STORAGE_KEY = "feedback-form-state";
 
-const formContainer = {};
+formEl.addEventListener('input', throttle(onInput, 500) );
 
-function onForm(e) {
-  const value = e.target.value;
-  formContainer[e.target.name] = value;
-  // formContainer[e.target.name] = e.target.value;
-  localStorage.setItem('feedback-form-state', JSON.stringify(formContainer));
+
+function onInput() {
+
+    const objData = {};
+    objData.email = emailEl.value;
+    objData.message = messageEl.value;
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(objData));
 }
 
-function onSubmit(e) {
-  console.log(JSON.parse(localStorage.getItem('feedback-form-state')));
-  e.preventDefault();
-  e.currentTarget.reset();
-  e.target.reset();
-  formContainer[e.target.name] = '';
-  localStorage.removeItem('feedback-form-state');
-}
+window.onload = load;
 
-(function dataFromLocalStorage() {
-  const data = JSON.parse(localStorage.getItem('feedback-form-state'));
-  if (data) {
-   refs.email.value = data.email;
-   refs.message.value = data.message;
-  }
-})();
+function load() {
+    const objFromStorage = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    
+    if (localStorage.getItem(STORAGE_KEY)) {
+        emailEl.value = objFromStorage.email;
+        messageEl.value = objFromStorage.message;            
+    } else {
+        emailEl.value = "";
+        messageEl.value = "";
+    }
+}
+      
+formEl.addEventListener('submit', onSubmit);
+
+function onSubmit(event) {
+    event.preventDefault();
+
+    console.log(JSON.parse(localStorage.getItem("feedback-form-state")));
+
+    localStorage.removeItem("feedback-form-state");
+    formEl.reset();
+}
